@@ -1,13 +1,21 @@
 import React, { useEffect, useState } from 'react'
 import ReactPaginate from 'react-paginate';
 import { format } from 'date-fns'
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
+
 
 const Pagination = () => {
     const [de,setDe] = useState([])
   
   const[num,setNum]=useState(0)
    
-    
+
   const fetchData=async(num)=>{
     const res = await fetch(`https://hn.algolia.com/api/v1/search_by_date?tags=story&page=${num}`)
     const data = await res.json().then(({ hits }) => {
@@ -43,34 +51,37 @@ const Pagination = () => {
       })
       },[])
       
-    
   return (
     <div>
     <div className='text-center'> 
     <h1 className='text-center mb-5'> Various Data Of API</h1>
-    <table className='table bg-dark'>
-    <thead>
-        <tr className='mb-5 text-success text-danger'>
-            <td><b>Title</b></td>
-            <td><b>Author</b></td>
-            <td><b>Created_At</b></td>
-                       
-        </tr>
-        </thead>
-        <tbody>
-        {
-            de.map((item)=>(
+    <TableContainer component={Paper}>
+      <Table sx={{ minWidth: 650 }} aria-label="simple table">
+        <TableHead>
+          <TableRow>
+            <TableCell>Title</TableCell>
+            <TableCell align="right">Author</TableCell>
+            <TableCell align="right">Created_At &nbsp;</TableCell>
             
-                <tr className='text-light'>
-                    
-                    <th scope='row'>{item.title}</th>
-                    <th scope='row'>{item.author}</th>
-                    <th scope='row'>{format(new Date(item.created_at),'dd/MMM/yyyy')}</th>   
-                </tr> 
-            ))
-        }
-        </tbody>
-    </table>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {de.map((row) => (
+            <TableRow
+              key={row.title}
+              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+            >
+              <TableCell component="th" scope="row">
+                {row.title}
+              </TableCell>
+              <TableCell align="right">{row.author}</TableCell>
+              <TableCell align="right">{format(new Date(row.created_at),'dd/MMM/yyyy')}</TableCell>
+              
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
 
     <ReactPaginate
       previousLabel={'Previous'}
